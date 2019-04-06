@@ -4,7 +4,7 @@ import json
 with open("../data/convert.json", "r", encoding="utf-8") as fcv:
     convert = json.load(fcv)
 
-df = pd.read_csv("../data/GrahamDF.csv")
+df = pd.read_csv("../data/GrahamUF.csv")
 
 df.index = df["first/last"]
 df = df.drop("first/last",axis=1)
@@ -17,12 +17,15 @@ df_new = df.rename(columns=lambda s: s[3:5],
 df_kana = df.rename(columns=lambda s: convert[s],
                     index=lambda s: convert[s],
                     inplace=True)
-numbering_list = "いうえかきけさしすせたちつてなにぬねはひふへ"
+numbering_list = "あいうえかきくけさしすせたちつてなにぬねはひふへ"
 algs = {}
 print(df.loc["い"]["え"])
 for x in numbering_list:
     for y in numbering_list:
-        algs[x+y] = df.loc[x][y]
+        try:
+            algs[x+y] = df.loc[x][y]
+        except:
+            pass
 
 print(algs["はけ"])
 print(algs["へな"])
