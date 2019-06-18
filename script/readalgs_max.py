@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 import re
-
+import math
 
 def main():
     with open("../data/convert.json", "r", encoding="utf-8") as fcv:
@@ -39,14 +39,18 @@ def main():
             try:
                 # ここものすごくpythonっぽい書き方で怖い x:str, y:str
                 # 都合上逆にしています
-                algs[x + y] = df.loc[y][x]
+                if isinstance(df.loc[y][x], str):
+                    algs[x + y] = df.loc[y][x]
+                else:
+                    algs[x + y] = None
             except:
-                algs[x + y] = "NaN"
+                algs[x + y] = None
 
     print(algs["はけ"])
     print(algs["へな"])
     with open("../data/myalgs.json", "w", encoding="utf-8") as fj:
         json.dump(algs, fj, ensure_ascii=False, indent=4)
+
 
 if __name__ == "__main__":
     main()

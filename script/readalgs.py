@@ -17,6 +17,8 @@ df_new = df.rename(columns=lambda s: s[3:5],
 df_kana = df.rename(columns=lambda s: convert[s],
                     index=lambda s: convert[s],
                     inplace=True)
+
+print(df)
 numbering_list = "あいうえかきくけさしすせたちつてなにぬねはひふへ"
 algs = {}
 print(df.loc["い"]["え"])
@@ -25,7 +27,7 @@ for x in numbering_list:
         try:
             algs[x+y] = df.loc[x][y]
         except:
-            pass
+            algs[x+y] = "NaN"
 
 print(algs["はけ"])
 print(algs["へな"])
