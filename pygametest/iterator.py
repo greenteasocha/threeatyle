@@ -7,7 +7,7 @@ class AlgIterator(object):
     def __init__(self,
                  alg_dic: dict,
                  shuffle: bool =False):
-        # self.alg_dic = alg_dic
+        print("INIT ITER")
         self.alg_dic = self.del_null(alg_dic)
         self.akeys = list(self.alg_dic.keys())
         if shuffle:
@@ -32,7 +32,7 @@ class AlgIterator(object):
         null_letters = []
         for k in list(algs.keys()):
             # nan 判定の方法としてfloatかどうかを用いる
-            if isinstance(algs[k], float):
+            if isinstance(algs[k], float) or not algs[k]:
                 null_letters.append(k)
 
         for nk in null_letters:
