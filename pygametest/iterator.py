@@ -56,7 +56,8 @@ class AlgIterator(object):
 
         return
 
-    def set_record(self, letter, record):
+    def set_records(self, letter, record):
+        # 指定された手順に対してタイムを記録する
         self.lasttime[letter] = record
         if letter in self.besttime:
             if self.besttime[letter] > record:
@@ -66,12 +67,26 @@ class AlgIterator(object):
 
         print("Record is set. {}".format(letter))
 
-    def dump_record(self):
+    def get_records(self, letter):
+        # 手順に対してベストタイム、直近タイムをreturn
+        if letter not in self.lasttime:
+            return 0, 0
+        else:
+            return self.besttime[letter], self.lasttime[letter]
+
+    def dump_records(self):
+        # ファイル書き込み
         with open("../data/record/besttime.json", "w", encoding="utf-8") as fbest:
             json.dump(self.besttime, fbest, ensure_ascii=False, indent=4)
         print("File written.")
         print(self.besttime)
 
+    def load_records(self):
+        # ファイル書き込み
+        with open("../data/record/besttime.json", "r", encoding="utf-8") as fbest:
+            self.besttime = json.loads(fbest)
+        print("File loaded.")
+        print(self.besttime)
 
 def set_iterator(path: str = "../data/myalgs.json"):
     with open(path, "r", encoding="utf-8") as f:

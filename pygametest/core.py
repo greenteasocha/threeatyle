@@ -18,9 +18,12 @@ def main():
     pygame.display.set_caption("3style Trainer ver. 0.1.0")
 
     sysfont = pygame.font.SysFont("Consolas", 20)
+    resetfont = pygame.font.SysFont("Consolas", 15)
+    fonts = {"sysfont": sysfont,
+             "resetfont": resetfont}
 
-    render = RenderingOperator(sysfont, screen)
-    e_timer = EventTimer(screen, sysfont, render)
+    render = RenderingOperator(fonts, screen)
+    e_timer = EventTimer(render)
     alg_iterator = set_iterator()
 
     # initial render
@@ -29,15 +32,16 @@ def main():
 
     # get initial letter
     letter, alg, idx = alg_iterator.__next__()
+    besttime, lasttime = alg_iterator.get_records(letter)
     print(alg)
 
     while (True):
         # テキスト描画部分
-        # screen.blit(hello1, (20, 50))
         screen.fill(BACKGROUND)
-        render.set_alg(alg, str(idx), letter)
-        render.draw_alg()
-        render.draw_reset(100,100,100,100,10)
+        render.set_alg(alg, str(idx), letter, besttime, lasttime)
+        render.draw_alg_rec()
+        render.draw_reset(const.POS_RESET)
+        render.draw_prevnext()
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -46,15 +50,35 @@ def main():
 
             if event.type == KEYDOWN:
                 if event.key == K_LEFT:
-                    e_timer.start_decision()
+                    e_timer.start_decision()  # 一定時間押されたかを検知、必要ならタイマーモードへ
                     if e_timer.is_measured:
+                        pygame.time.wait(200)
                         print("GET: last measured time is {}ms".format(e_timer.last_measured))
-                        alg_iterator.set_record(letter, e_timer.last_measured)
-                        alg_iterator.dump_record()
+                        # タイマーモードへ移行した場合、測定したタイムを記録する
+                        alg_iterator.set_records(letter, e_timer.last_measured)
+                        alg_iterator.dump_records()
                         letter, alg, idx = alg_iterator.__next__()
+                        besttime, lasttime = alg_iterator.get_records(letter)
 
                     print(alg)
 
+                if event.key == K_a:
+                    if alg_iterator.idx > 1:
+                        print(alg_iterator.idx)
+                        alg_iterator.idx -= 2  # ここ若干ハードコーディングで危険
+                        letter, alg, idx = alg_iterator.__next__()
+                        besttime, lasttime = alg_iterator.get_records(letter)
+
+                if event.key == K_d:
+                    letter, alg, idx = alg_iterator.__next__()
+                    besttime, lasttime = alg_iterator.get_records(letter)
+
+                if event.key == K_r:
+                    if letter in alg_iterator.besttime:
+                        del alg_iterator.besttime[letter]
+                        del alg_iterator.lasttime[letter]
+                        besttime, lasttime = alg_iterator.get_records(letter)
+                        render.paint_reset(const.POS_RESET)
 
 
 if __name__ == "__main__":

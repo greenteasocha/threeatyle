@@ -11,12 +11,12 @@ BLACK = (0, 0, 0)
 KEY_TIMER = K_LEFT
 
 class EventTimer():
-    def __init__(self, screen, sysfont, render):
+    def __init__(self, render):
         self.hold_to_start = 200 # ms
         self.wait_after_measure = 200 # ms
-        self.screen = screen
-        self.sysfont = sysfont
         self.render = render
+        self.screen = render.screen
+        self.sysfont = render.sysfont
         self.is_measured = False
         self.last_measured = 100000000
         self.last_letter = ""
@@ -57,7 +57,7 @@ class EventTimer():
 
                     self.screen.fill(BACKGROUND)
                     self.render.draw_ready()
-                    self.render.draw_alg()
+                    self.render.draw_alg_rec()
                     pygame.display.update()
 
     def countup(self):
@@ -70,7 +70,7 @@ class EventTimer():
 
             self.screen.fill(BACKGROUND)
             self.render.draw_running(t_passed)
-            self.render.draw_alg()
+            self.render.draw_alg_rec()
             pygame.display.update()
 
             for event in pygame.event.get():
@@ -81,33 +81,57 @@ class EventTimer():
                         print("Here")
                         return
 
+
 class RenderingOperator():
-    def __init__(self, sysfont, screen):
-        self.sysfont = sysfont
+    def __init__(self, fonts, screen):
+        self.fonts = fonts
         self.screen = screen
+
+        self.get_font()
+
+    def get_font(self):
+        self.sysfont = self.fonts["sysfont"]
+        self.resetfont = self.fonts["resetfont"]
 
     def set_alg(self,
                 alg: str,
                 idx: str,
                 letter: str,
-                pos_alg=(300, 200)):
+                best: int,
+                last: int
+                ):
         self.alg = alg
         self.idx = idx
         self.letter = letter
-        self.pos_alg = pos_alg
-
+        self.best = best
+        self.last = last
 
     def draw_alg(self):
         text_alg = self.sysfont.render(self.alg, True, BLACK)
         text_idx = self.sysfont.render(self.idx, True, BLACK)
         text_letter = self.sysfont.render(self.letter, True, BLACK)
-        self.screen.blit(text_alg, self.pos_alg)
+        self.screen.blit(text_alg, const.POS_ARG)
+
+    def draw_records(self):
+        text_best = self.sysfont.render("BEST TIME     :{}".format(str(self.best)), True, BLACK)
+        text_last = self.sysfont.render("LAST MEASURED :{}".format(str(self.last)), True, BLACK)
+        self.screen.blit(text_best, const.POS_BEST)
+        self.screen.blit(text_last, const.POS_LAST)
+
+    def draw_alg_rec(self):
+        self.draw_alg()
+        self.draw_records()
+
+    def draw_prevnext(self):
+        text_prevnext = self.sysfont.render("< PREV (A)    (D) NEXT >", True, BLACK)
+        self.screen.blit(text_prevnext, const.POS_PREVNEXT)
 
     def draw_ready(self, pos_ready=(20, 50)):
         text_ready = self.sysfont.render("Ready?", True, (255, 0, 0))  # 赤文字へ
         self.screen.blit(text_ready, (20, 50))
 
-    def draw_reset(self, x, y, xlen, ylen, mergin):
+    def draw_reset(self, status):
+        x, y, xlen, ylen, mergin = status
         outside = pygame.Rect(x, y, xlen, ylen)
         inside = pygame.Rect(x + mergin/2,
                              y + mergin/2,
@@ -115,8 +139,15 @@ class RenderingOperator():
                              ylen - mergin)
         pygame.draw.rect(self.screen, (255, 0, 0), outside)
         pygame.draw.rect(self.screen, BACKGROUND, inside)
+        text_reset = self.resetfont.render("RESET? (R)", True, BLACK)
+        self.screen.blit(text_reset, (x+10, y+3))
 
-
+    def paint_reset(self, status):
+        x, y, xlen, ylen, mergin = status
+        outside = pygame.Rect(x, y, xlen, ylen)
+        pygame.draw.rect(self.screen, (255, 0, 0), outside)
+        pygame.display.update()
+        pygame.time.wait(100)
 
 
     def draw_running(self, curtime: int, pos_time=(20, 100)):
