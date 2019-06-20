@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 from iterator import set_iterator
+import const
 import sys
 import time
 
@@ -106,6 +107,18 @@ class RenderingOperator():
         text_ready = self.sysfont.render("Ready?", True, (255, 0, 0))  # 赤文字へ
         self.screen.blit(text_ready, (20, 50))
 
+    def draw_reset(self, x, y, xlen, ylen, mergin):
+        outside = pygame.Rect(x, y, xlen, ylen)
+        inside = pygame.Rect(x + mergin/2,
+                             y + mergin/2,
+                             xlen - mergin,
+                             ylen - mergin)
+        pygame.draw.rect(self.screen, (255, 0, 0), outside)
+        pygame.draw.rect(self.screen, BACKGROUND, inside)
+
+
+
+
     def draw_running(self, curtime: int, pos_time=(20, 100)):
         text_running = self.sysfont.render("Running...", True, (0, 0, 0))
         text_curtime = self.sysfont.render(str(curtime / 1000), True, (0, 0, 0))
@@ -113,47 +126,3 @@ class RenderingOperator():
         self.screen.blit(text_curtime, (20, 100))
 
 
-def main():
-    pygame.init()
-    screen = pygame.display.set_mode(SCREEN_SIZE)
-    pygame.display.set_caption("3style Trainer ver. 0.1.0")
-
-    sysfont = pygame.font.SysFont("Consolas", 20)
-    text_result = sysfont.render("Result.", True, (255, 0, 0))
-
-    e_timer = EventTimer(screen, sysfont)
-    alg_iterator = set_iterator()
-
-    # initial render
-    screen.fill(BACKGROUND)
-    pygame.display.update()
-
-    # get initial letter
-    letter, alg, idx = alg_iterator.__next__()
-    text_alg = sysfont.render(alg, True, BLACK)
-    text_idx = sysfont.render(str(idx), True, BLACK)
-    text_letter = sysfont.render(letter, True, BLACK)
-
-    print(alg)
-
-    while (True):
-        # テキスト描画部分
-        # screen.blit(hello1, (20, 50))
-        screen.blit(text_alg, (300, 200))
-
-        pygame.display.update()
-
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-
-            if event.type == KEYDOWN:
-                if event.key == K_LEFT:
-                    e_timer.start_decision()
-                    if e_timer.is_measured:
-                        print("GET: last measured time is {}ms".format(e_timer.last_measured))
-                    screen.fill(BACKGROUND)
-                    pygame.display.update()
-
-if __name__ == "__main__":
-    main()

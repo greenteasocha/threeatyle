@@ -3,6 +3,7 @@ from pygame.locals import *
 from iterator import set_iterator
 from utils import EventTimer
 from utils import RenderingOperator
+import const
 import sys
 import time
 
@@ -23,15 +24,11 @@ def main():
     alg_iterator = set_iterator()
 
     # initial render
-    screen.fill(BACKGROUND)
+    screen.fill(const.BACKGROUND)
     pygame.display.update()
 
     # get initial letter
     letter, alg, idx = alg_iterator.__next__()
-    text_alg = sysfont.render(alg, True, BLACK)
-    text_idx = sysfont.render(str(idx), True, BLACK)
-    text_letter = sysfont.render(letter, True, BLACK)
-
     print(alg)
 
     while (True):
@@ -40,6 +37,7 @@ def main():
         screen.fill(BACKGROUND)
         render.set_alg(alg, str(idx), letter)
         render.draw_alg()
+        render.draw_reset(100,100,100,100,10)
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -51,6 +49,8 @@ def main():
                     e_timer.start_decision()
                     if e_timer.is_measured:
                         print("GET: last measured time is {}ms".format(e_timer.last_measured))
+                        alg_iterator.set_record(letter, e_timer.last_measured)
+                        alg_iterator.dump_record()
                         letter, alg, idx = alg_iterator.__next__()
 
                     print(alg)

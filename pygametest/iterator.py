@@ -56,6 +56,23 @@ class AlgIterator(object):
 
         return
 
+    def set_record(self, letter, record):
+        self.lasttime[letter] = record
+        if letter in self.besttime:
+            if self.besttime[letter] > record:
+                self.besttime[letter] = record
+        else:
+            self.besttime[letter] = record
+
+        print("Record is set. {}".format(letter))
+
+    def dump_record(self):
+        with open("../data/record/besttime.json", "w", encoding="utf-8") as fbest:
+            json.dump(self.besttime, fbest, ensure_ascii=False, indent=4)
+        print("File written.")
+        print(self.besttime)
+
+
 def set_iterator(path: str = "../data/myalgs.json"):
     with open(path, "r", encoding="utf-8") as f:
         algs = json.load(f)
