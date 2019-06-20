@@ -18,8 +18,8 @@ def main():
 
     sysfont = pygame.font.SysFont("Consolas", 20)
 
-    e_timer = EventTimer(screen, sysfont)
     render = RenderingOperator(sysfont, screen)
+    e_timer = EventTimer(screen, sysfont, render)
     alg_iterator = set_iterator()
 
     # initial render
@@ -39,6 +39,7 @@ def main():
         # screen.blit(hello1, (20, 50))
         screen.fill(BACKGROUND)
         render.set_alg(alg, str(idx), letter)
+        render.draw_alg()
         pygame.display.update()
 
         for event in pygame.event.get():

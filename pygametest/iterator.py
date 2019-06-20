@@ -15,6 +15,8 @@ class AlgIterator(object):
             random.shuffle(self.akeys)
         self.alen = len(self.akeys)
         self.idx = 0
+        self.besttime = {}
+        self.lasttime = {}
 
     def __iter__(self):
         return self

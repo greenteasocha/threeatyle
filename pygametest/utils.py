@@ -10,13 +10,16 @@ BLACK = (0, 0, 0)
 KEY_TIMER = K_LEFT
 
 class EventTimer():
-    def __init__(self, screen, sysfont):
+    def __init__(self, screen, sysfont, render):
         self.hold_to_start = 200 # ms
         self.wait_after_measure = 200 # ms
         self.screen = screen
         self.sysfont = sysfont
+        self.render = render
         self.is_measured = False
         self.last_measured = 100000000
+        self.last_letter = ""
+        self.last_alg = ""
 
     def start_decision(self) -> None:
         """
@@ -52,8 +55,8 @@ class EventTimer():
                     is_ready = True
 
                     self.screen.fill(BACKGROUND)
-                    text_ready = self.sysfont.render("Ready?", True, (255, 0, 0)) # 赤文字へ
-                    self.screen.blit(text_ready, (20, 50))
+                    self.render.draw_ready()
+                    self.render.draw_alg()
                     pygame.display.update()
 
     def countup(self):
@@ -65,10 +68,8 @@ class EventTimer():
             t_passed = t_now - t_0
 
             self.screen.fill(BACKGROUND)
-            text_running = self.sysfont.render("Running...", True, (0, 0, 0))
-            text_curtime = self.sysfont.render(str(t_passed/1000), True, (0, 0, 0))
-            self.screen.blit(text_running, (20, 50))
-            self.screen.blit(text_curtime, (20, 100))
+            self.render.draw_running(t_passed)
+            self.render.draw_alg()
             pygame.display.update()
 
             for event in pygame.event.get():
@@ -85,15 +86,31 @@ class RenderingOperator():
         self.screen = screen
 
     def set_alg(self,
-                alg,
-                idx,
-                letter,
+                alg: str,
+                idx: str,
+                letter: str,
                 pos_alg=(300, 200)):
-        text_alg = self.sysfont.render(alg, True, BLACK)
-        text_idx = self.sysfont.render(idx, True, BLACK)
-        text_letter = self.sysfont.render(letter, True, BLACK)
-        self.screen.blit(text_alg, pos_alg)
+        self.alg = alg
+        self.idx = idx
+        self.letter = letter
+        self.pos_alg = pos_alg
 
+
+    def draw_alg(self):
+        text_alg = self.sysfont.render(self.alg, True, BLACK)
+        text_idx = self.sysfont.render(self.idx, True, BLACK)
+        text_letter = self.sysfont.render(self.letter, True, BLACK)
+        self.screen.blit(text_alg, self.pos_alg)
+
+    def draw_ready(self, pos_ready=(20, 50)):
+        text_ready = self.sysfont.render("Ready?", True, (255, 0, 0))  # 赤文字へ
+        self.screen.blit(text_ready, (20, 50))
+
+    def draw_running(self, curtime: int, pos_time=(20, 100)):
+        text_running = self.sysfont.render("Running...", True, (0, 0, 0))
+        text_curtime = self.sysfont.render(str(curtime / 1000), True, (0, 0, 0))
+        self.screen.blit(text_running, (20, 50))
+        self.screen.blit(text_curtime, (20, 100))
 
 
 def main():
