@@ -50,6 +50,7 @@ class AlgIterator(object):
                 # 無効なレターペアなら警告
                 print("Letter {} is in not your letters.".format(letter))
                 self.idx -= 1
+                raise Exception("letter doesnt exist!")
         else:
             # 空文字ならパス
             pass
@@ -70,9 +71,26 @@ class AlgIterator(object):
     def get_records(self, letter):
         # 手順に対してベストタイム、直近タイムをreturn
         if letter not in self.lasttime:
-            return 0, 0
+            last = 0
         else:
-            return self.besttime[letter], self.lasttime[letter]
+            last = self.lasttime[letter]
+
+        if letter not in self.besttime:
+            best = 0
+        else:
+            best = self.besttime[letter]
+
+        return best, last
+
+    def delete_records(self, letter: str):
+        try:
+            del self.besttime[letter]
+        except:
+            pass
+        try:
+            del self.lasttime[letter]
+        except:
+            pass
 
     def dump_records(self):
         # ファイル書き込み
@@ -84,15 +102,19 @@ class AlgIterator(object):
     def load_records(self):
         # ファイル書き込み
         with open("../data/record/besttime.json", "r", encoding="utf-8") as fbest:
-            self.besttime = json.loads(fbest)
+            self.besttime = json.load(fbest)
         print("File loaded.")
         print(self.besttime)
 
-def set_iterator(path: str = "../data/myalgs.json"):
+
+def set_iterator(path: str = "../data/myalgs.json",
+                 shuffle: bool=False):
+
     with open(path, "r", encoding="utf-8") as f:
         algs = json.load(f)
 
-    return AlgIterator(algs, shuffle=False)
+    return AlgIterator(algs, shuffle=shuffle)
+
 
 def main():
     with open("../data/myalgs.json", "r", encoding="utf-8") as f:

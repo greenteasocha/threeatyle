@@ -2,13 +2,9 @@ import pygame
 from pygame.locals import *
 from iterator import set_iterator
 import const
+from const import *
 import sys
 import time
-
-SCREEN_SIZE = (600, 400)
-BACKGROUND = (153, 204, 0)
-BLACK = (0, 0, 0)
-KEY_TIMER = K_LEFT
 
 class EventTimer():
     def __init__(self, render):
@@ -75,7 +71,7 @@ class EventTimer():
 
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
-                    if event.key == K_LEFT:
+                    if event.key == KEY_TIMER:
                         self.last_measured = t_passed
                         pygame.time.wait(self.wait_after_measure)
                         print("Here")
@@ -106,11 +102,25 @@ class RenderingOperator():
         self.best = best
         self.last = last
 
+    def set_former(self, letter: str, record: str):
+        self.former_leter = letter
+        self.former_record = record
+
+    def draw_former(self):
+        text_fm = self.sysfont.render("PREVIOUS RESULT IS: ", True, BLACK)
+        text_fmletter = self.sysfont.render("{}: ".format(self.former_leter), True, BLACK)
+        text_fmrecord = self.sysfont.render(self.former_record, True, BLACK)
+        self.screen.blit(text_fm, const.POS_FM)
+        self.screen.blit(text_fmletter, const.POS_FMLETTER)
+        self.screen.blit(text_fmrecord, const.POS_FMRECORD)
+
     def draw_alg(self):
         text_alg = self.sysfont.render(self.alg, True, BLACK)
         text_idx = self.sysfont.render(self.idx, True, BLACK)
         text_letter = self.sysfont.render(self.letter, True, BLACK)
         self.screen.blit(text_alg, const.POS_ARG)
+        self.screen.blit(text_letter, const.POS_LETTER)
+        self.screen.blit(text_idx, const.POS_IDX)
 
     def draw_records(self):
         text_best = self.sysfont.render("BEST TIME     :{}".format(str(self.best)), True, BLACK)
@@ -126,7 +136,14 @@ class RenderingOperator():
         text_prevnext = self.sysfont.render("< PREV (A)    (D) NEXT >", True, BLACK)
         self.screen.blit(text_prevnext, const.POS_PREVNEXT)
 
-    def draw_ready(self, pos_ready=(20, 50)):
+    def draw_jump(self):
+        text_jump1 = self.sysfont.render("Jump?", True, BLACK)
+        text_jump2 = self.sysfont.render("(J) →", True, BLACK)
+        self.screen.blit(text_jump1, POS_JUMPQ)
+        x, y = POS_JUMPQ
+        self.screen.blit(text_jump2, (x, y + 20))
+
+    def draw_ready(self):
         text_ready = self.sysfont.render("Ready?", True, (255, 0, 0))  # 赤文字へ
         self.screen.blit(text_ready, (20, 50))
 
@@ -156,4 +173,10 @@ class RenderingOperator():
         self.screen.blit(text_running, (20, 50))
         self.screen.blit(text_curtime, (20, 100))
 
-
+    def draw_peke(self, begin: tuple, end: tuple, color=WHITE):
+        xbeg, ybeg = begin
+        xend, yend = end
+        pygame.draw.line(self.screen, color, (xbeg, ybeg), (xend, yend), 4)
+        pygame.draw.line(self.screen, color, (xbeg, yend), (xend, ybeg), 4)
+        pygame.display.update()
+        pygame.time.wait(1000)
