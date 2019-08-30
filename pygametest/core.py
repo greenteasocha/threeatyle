@@ -20,10 +20,11 @@ def main():
     fonts = {"sysfont": sysfont,
              "resetfont": resetfont}
 
+    # set modules
     render = RenderingOperator(fonts, screen)
     e_timer = EventTimer(render)
     jump_selector = JumpSelector(render)
-    alg_iterator = set_iterator(shuffle=True)
+    alg_iterator = set_iterator(shuffle=False)
     alg_iterator.load_records()
 
     # initial render
@@ -36,13 +37,18 @@ def main():
     besttime, lasttime = alg_iterator.get_records(letter)
     print(alg)
 
+    # 手順見せるかのフラグ
+    show_alg = True
+
     while (True):
-        # テキスト描画部分
+        # テキスト描画部分の準備
         screen.fill(BACKGROUND)
         render.set_former(former_letter, former_time)
         render.set_alg(alg, str(idx), letter, besttime, lasttime)
+        # 描画
         render.draw_former()
-        render.draw_alg_rec()
+        if show_alg:
+            render.draw_alg_rec()
         render.draw_reset(const.POS_RESET)
         render.draw_jump()
         render.draw_prevnext()
@@ -98,6 +104,8 @@ def main():
                     letter, alg, idx = alg_iterator.__next__()
                     besttime, lasttime = alg_iterator.get_records(letter)
 
+                elif event.key == K_h:
+                    show_alg = not show_alg
 
 if __name__ == "__main__":
     main()

@@ -100,12 +100,16 @@ class AlgIterator(object):
         print(self.besttime)
 
     def load_records(self):
-        # ファイル書き込み
-        with open("../data/record/besttime.json", "r", encoding="utf-8") as fbest:
-            self.besttime = json.load(fbest)
-        print("File loaded.")
-        print(self.besttime)
-
+        # ファイル読み込み
+        try:
+            with open("../data/record/besttime.json", "r", encoding="utf-8") as fbest:
+                self.besttime = json.load(fbest)
+            print("File loaded.")
+            print(self.besttime)
+        except:
+            self.besttime = {}
+            print("No data.")
+            print("New file created.")
 
 def set_iterator(path: str = "../data/myalgs.json",
                  shuffle: bool=False):
