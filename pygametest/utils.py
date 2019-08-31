@@ -114,6 +114,12 @@ class RenderingOperator():
         self.screen.blit(text_fmletter, const.POS_FMLETTER)
         self.screen.blit(text_fmrecord, const.POS_FMRECORD)
 
+    def draw_letteronly(self):
+        text_idx = self.sysfont.render(self.idx, True, BLACK)
+        text_letter = self.sysfont.render(self.letter, True, BLACK)
+        self.screen.blit(text_letter, const.POS_LETTER)
+        self.screen.blit(text_idx, const.POS_IDX)
+
     def draw_alg(self):
         text_alg = self.sysfont.render(self.alg, True, BLACK)
         text_idx = self.sysfont.render(self.idx, True, BLACK)

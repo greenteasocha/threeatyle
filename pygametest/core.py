@@ -38,7 +38,7 @@ def main():
     print(alg)
 
     # 手順見せるかのフラグ
-    show_alg = True
+    show_alg = False
 
     while (True):
         # テキスト描画部分の準備
@@ -49,6 +49,8 @@ def main():
         render.draw_former()
         if show_alg:
             render.draw_alg_rec()
+        else:
+            render.draw_letteronly()
         render.draw_reset(const.POS_RESET)
         render.draw_jump()
         render.draw_prevnext()
@@ -86,6 +88,10 @@ def main():
                     # 前の手順へ
                     letter, alg, idx = alg_iterator.__next__()
                     besttime, lasttime = alg_iterator.get_records(letter)
+
+                elif event.key == K_s:
+                    # 手順表示/非表示の切り替え
+                    show_alg = not show_alg
 
                 elif event.key == K_r:
                     # 現在表示されているタイムの消去
