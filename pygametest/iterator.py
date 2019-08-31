@@ -15,8 +15,9 @@ class AlgIterator(object):
             random.shuffle(self.akeys)
         self.alen = len(self.akeys)
         self.idx = 0
-        self.besttime = {}
         self.lasttime = {}
+        self.load_records()
+        self.load_states()
 
     def __iter__(self):
         return self
@@ -110,6 +111,39 @@ class AlgIterator(object):
             self.besttime = {}
             print("No data.")
             print("New file created.")
+
+    def dump_states(self):
+        # ファイル書き込み
+        with open("../data/record/states.json", "w", encoding="utf-8") as fstates:
+            json.dump(self.states, fstates, ensure_ascii=False, indent=4)
+        print("File written.")
+
+    def load_states(self):
+        # ファイル読み込み
+        try:
+            with open("../data/record/states.json", "r", encoding="utf-8") as fstates:
+                self.states = json.load(fstates)
+            print("File loaded.")
+        except:
+            self.states = {}
+            print("No states.")
+            print("New file created.")
+
+    def check_state(self, alg):
+        if alg in self.states:
+            return self.states[alg]
+        else:
+            return True
+
+    def change_state(self, alg):
+        cur_state = self.check_state(alg)
+        state = not cur_state
+
+        self.states[alg] = state
+        self.dump_states()
+
+        return state
+
 
 def set_iterator(path: str = "../data/myalgs.json",
                  shuffle: bool=False):

@@ -25,7 +25,6 @@ def main():
     e_timer = EventTimer(render)
     jump_selector = JumpSelector(render)
     alg_iterator = set_iterator(shuffle=False)
-    alg_iterator.load_records()
 
     # initial render
     screen.fill(const.BACKGROUND)
@@ -47,6 +46,7 @@ def main():
         render.set_alg(alg, str(idx), letter, besttime, lasttime)
         # 描画
         render.draw_former()
+        show_alg = alg_iterator.check_state(alg)
         if show_alg:
             render.draw_alg_rec()
         else:
@@ -91,7 +91,8 @@ def main():
 
                 elif event.key == K_s:
                     # 手順表示/非表示の切り替え
-                    show_alg = not show_alg
+                    state = alg_iterator.change_state(alg)
+                    show_alg = state
 
                 elif event.key == K_r:
                     # 現在表示されているタイムの消去
@@ -110,8 +111,6 @@ def main():
                     letter, alg, idx = alg_iterator.__next__()
                     besttime, lasttime = alg_iterator.get_records(letter)
 
-                elif event.key == K_h:
-                    show_alg = not show_alg
 
 if __name__ == "__main__":
     main()
