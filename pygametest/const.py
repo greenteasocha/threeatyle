@@ -48,6 +48,9 @@ class _const:
         self.BAR_STRIDE = 30
         self.PEKE_BEG = (130, 150)
         self.PEKE_END = (210, 190)
+        # キューブの描画
+        self.POS_CUBE_ORIGIN = (20, 40)
+        self.POS_CUBE_SETUP = (125, 40)
 
     def __setattr__(self, name, value):
         if name in self.__dict__:

@@ -15,7 +15,7 @@ def main():
     pygame.display.set_caption("3style Trainer ver. 0.1.0")
 
     sysfont = pygame.font.SysFont("Consolas", 20)
-    sysfont = pygame.font.Font("../data/font/natumeosmall.ttf", 20)
+    # sysfont = pygame.font.Font("../data/font/natumeosmall.ttf", 20)
     resetfont = pygame.font.SysFont("Consolas", 15)
     fonts = {"sysfont": sysfont,
              "resetfont": resetfont}
@@ -54,6 +54,7 @@ def main():
         render.draw_reset(const.POS_RESET)
         render.draw_jump()
         render.draw_prevnext()
+        render.show_cube(letter)
         jump_selector.draw_tiles()
         pygame.display.update()
 

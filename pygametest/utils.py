@@ -186,3 +186,10 @@ class RenderingOperator():
         pygame.draw.line(self.screen, color, (xbeg, yend), (xend, ybeg), 4)
         pygame.display.update()
         pygame.time.wait(1000)
+
+    def show_cube(self, letter):
+        image_org = pygame.image.load("../data/images/target/{}.png".format(letter))
+        self.screen.blit(image_org, POS_CUBE_ORIGIN)
+
+        image_setup = pygame.image.load("../data/images/setup/{}.png".format(letter))
+        self.screen.blit(image_setup, POS_CUBE_SETUP)

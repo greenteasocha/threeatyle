@@ -145,6 +145,7 @@ class AlgIterator(object):
         return state
 
 
+
 def set_iterator(path: str = "../data/myalgs.json",
                  shuffle: bool=False):
 
